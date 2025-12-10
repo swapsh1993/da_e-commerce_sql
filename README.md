@@ -54,13 +54,21 @@ product;
 **a. Record Count: Determine the total number of records in the dataset.**
 
 ***
-SELECT COUNT(*) FROM customer;
+SELECT 
+	COUNT(*)
+FROM customer;
 
-SELECT COUNT(*) FROM orderdetail;
+SELECT 
+	COUNT(*)
+FROM orderdetail;
 
-SELECT COUNT(*) FROM orders;
+SELECT 
+	COUNT(*)
+FROM orders;
 
-SELECT COUNT(*) FROM product;
+SELECT 
+	COUNT(*)
+FROM product;
 ***
 
 **b. Customer Count: Find out how many unique customers are in the dataset.**
