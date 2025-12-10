@@ -428,9 +428,12 @@ The project involves setting up an e-commerce_company_retail_analysis database, 
 This project covers database setup, exploratory data analysis, and business-driven SQL queries. The findings from this project can help drive business decisions by understanding sales patterns, customer behavior, and product performance.
 
 • **How to run this project –**
-Step 1 – Clone the Repository: Clone this project repository from GitHub.
+Step 1 – Copy the Repository: Copy this project repository from GitHub.
+
 Step 2 – Set Up the Database: Run the SQL scripts provided in the E-commerce.sql file to create and populate the database.
+
 Step 3 – Run the Queries: Use the SQL queries provided in the E-commerce.sql file to perform your analysis.
+
 Step 4 - Explore and Modify: Feel free to modify the queries to explore different aspects of the dataset or answer additional business questions
 
 •	**Author & contact** – Swapnil Shinde, Email ID – swapsh1993@yahoo.in
