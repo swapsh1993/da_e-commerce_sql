@@ -37,19 +37,15 @@ The project involves setting up an e-commerce_company_retail_analysis database, 
 
 ***
 DESC 
-
 customer;
 
 DESC 
-
 orderdetail;
 
 DESC 
-
 orders;
 
 DESC 
-
 product;
 ***
 
