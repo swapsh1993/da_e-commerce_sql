@@ -55,8 +55,12 @@ product;
 
 ***
 SELECT 
+
 	COUNT(*)
-FROM customer;
+	
+FROM 
+
+customer;
 
 SELECT 
 	COUNT(*)
