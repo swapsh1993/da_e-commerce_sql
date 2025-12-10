@@ -309,108 +309,108 @@ The project involves setting up an e-commerce_company_retail_analysis database, 
 **Q7. Examine how the average order value changes month-on-month. Insights can guide pricing and promotional strategies to enhance order value.**
 
 ***
-SELECT 
-
-	DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m') AS Month,
+	SELECT 
 	
-	ROUND(AVG(total_amount),2) AS AvgOrderValue,
-
-	ROUND(AVG(total_amount)- LAG(AVG(total_amount)) OVER (ORDER BY DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')),2) AS ChangeInValue
-
-FROM Orders
-
-GROUP BY Month
-
-ORDER BY ChangeInValue DESC;
+		DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m') AS Month,
+		
+		ROUND(AVG(total_amount),2) AS AvgOrderValue,
+	
+		ROUND(AVG(total_amount)- LAG(AVG(total_amount)) OVER (ORDER BY DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')),2) AS ChangeInValue
+	
+	FROM Orders
+	
+	GROUP BY Month
+	
+	ORDER BY ChangeInValue DESC;
 ***
 
 **Q8. Based on sales data, identify top 5 products with the fastest turnover rates, suggesting high demand and the need for frequent restocking.**
 ***
-SELECT 
+	SELECT 
+		
+		Product_id,
+		
+		COUNT(order_id) AS SalesFrequency
 	
-	Product_id,
+	FROM OrderDetail
 	
-	COUNT(order_id) AS SalesFrequency
-
-FROM OrderDetail
-
-GROUP BY Product_id
-
-ORDER BY SalesFrequency DESC
-
-LIMIT 5;
+	GROUP BY Product_id
+	
+	ORDER BY SalesFrequency DESC
+	
+	LIMIT 5;
 ***
 
 **Q9. List products purchased by less than 40% of the customer base, indicating potential mismatches between inventory and customer interest.**
 
 ***
-SELECT 
+	SELECT 
+		
+		p.Product_id,
+		
+		p.Name,
+		
+		COUNT(Distinct o.customer_id) AS UniqueCustomerCount
 	
-	p.Product_id,
+	FROM Product p
 	
-	p.Name,
+	JOIN OrderDetail d
 	
-	COUNT(Distinct o.customer_id) AS UniqueCustomerCount
-
-FROM Product p
-
-JOIN OrderDetail d
-
-ON p.Product_id=d.Product_id
-
-JOIN Orders o
-
-ON d.Order_id=o.Order_id
-
-Group by p.Product_id,p.Name
-
-Having COUNT(DISTINCT o.customer_id) <(SELECT COUNT(*) FROM customer)*0.4;
+	ON p.Product_id=d.Product_id
+	
+	JOIN Orders o
+	
+	ON d.Order_id=o.Order_id
+	
+	Group by p.Product_id,p.Name
+	
+	Having COUNT(DISTINCT o.customer_id) <(SELECT COUNT(*) FROM customer)*0.4;
 ***
 
 **Q10. Evaluate the month-on-month growth rate in the customer base to understand the effectiveness of marketing campaigns and market expansion efforts.**
 
 ***
-WITH firstPurchase AS 
-
-(SELECT 
+	WITH firstPurchase AS 
 	
-	Customer_id, 
+	(SELECT 
+		
+		Customer_id, 
+		
+		MIN(DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')) AS firstmonth
 	
-	MIN(DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')) AS firstmonth
-
-FROM Orders
-
-GROUP BY Customer_id)
-
-SELECT 
+	FROM Orders
 	
-	firstmonth AS FirstPurchaseMonth, 
+	GROUP BY Customer_id)
 	
-	COUNT(Customer_id) AS TotalNewCustomers
-
-FROM firstPurchase
-
-GROUP BY firstmonth
-
-ORDER BY firstmonth ASC;
+	SELECT 
+		
+		firstmonth AS FirstPurchaseMonth, 
+		
+		COUNT(Customer_id) AS TotalNewCustomers
+	
+	FROM firstPurchase
+	
+	GROUP BY firstmonth
+	
+	ORDER BY firstmonth ASC;
 ***
 
 **Q11. Identify top 3 months with the highest sales volume, aiding in planning for stock levels, marketing efforts and staffing in anticipation of peak demand periods.**
 
 ***
-SELECT 
+	SELECT 
+		
+		DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m') AS Month, 
+		
+		SUM(total_amount) AS TotalSales
 	
-	DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m') AS Month, 
+	FROM Orders
 	
-	SUM(total_amount) AS TotalSales
-
-FROM Orders
-
-GROUP BY DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')
-
-ORDER BY TotalSales DESC
-
-LIMIT 3;
+	GROUP BY DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')
+	
+	ORDER BY TotalSales DESC
+	
+	LIMIT 3;
 ***
 
 •	**Result –** The findings from this project are as follows:
