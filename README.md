@@ -31,7 +31,7 @@ The project involves setting up an e-commerce_company_retail_analysis database, 
 
 •	**Data Analysis –**
 
-**1. Data Exploration – **
+**1. Data Exploration –**
 Task: Describe the Tables:
 
 ***sql
@@ -44,7 +44,7 @@ DESC product;
 **2.	Exploratory Data Analysis –**
 a. Record Count: Determine the total number of records in the dataset.
 
-***sql
+***
 SELECT COUNT(*) FROM customer;
 SELECT COUNT(*) FROM orderdetail;
 SELECT COUNT(*) FROM orders;
