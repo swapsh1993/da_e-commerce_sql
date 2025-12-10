@@ -34,10 +34,14 @@ The project involves setting up an e-commerce_company_retail_analysis database, 
 **1. Data Exploration –**
 Task: Describe the Tables:
 
-***SQL
+***sql
+
 DESC customer;
+
 DESC orderdetail;
+
 DESC orders;
+
 DESC product;
 ***
 
