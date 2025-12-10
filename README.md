@@ -32,6 +32,7 @@ The project involves setting up an e-commerce_company_retail_analysis database, 
 •	**Data Analysis –**
 
 **1. Data Exploration –**
+
 **Task: Describe the Tables:**
 
 ***
@@ -45,6 +46,7 @@ DESC product;
 ***
 
 **2.	Exploratory Data Analysis –**
+
 **a. Record Count: Determine the total number of records in the dataset.**
 
 ***
@@ -60,37 +62,58 @@ SELECT COUNT(*) FROM product;
 **b. Customer Count: Find out how many unique customers are in the dataset.**
 
 ***
-SELECT COUNT(DISTINCT customer_id) FROM customer;
+SELECT COUNT(DISTINCT customer_id) 
+
+FROM customer;
 ***
 
 **c. Null Value Check: Check for any null values in the dataset**
 
 ***
 SELECT * FROM Customer
+
 WHERE 
+
 	customer_id IS NULL OR
+	
     name IS NULL OR
+	
     location IS NULL;
 
 SELECT * FROM orderdetail
+
 WHERE 
+
 	order_id IS NULL OR
+	
     product_id IS NULL OR
+	
     quantity IS NULL OR
+	
     price_per_unit IS NULL;
 
 SELECT * FROM orders
+
 WHERE 
+
 	order_id IS NULL OR
+	
     order_date IS NULL OR
+	
     customer_id IS NULL OR
+	
     total_amount IS NULL;
 
 SELECT * FROM product
+
 WHERE 
+
 	product_id IS NULL OR
+	
     name IS NULL OR
+	
     category IS NULL OR
+	
     price IS NULL;
 ***
 
@@ -100,42 +123,64 @@ WHERE
 
 ***
 SELECT location AS city_name, COUNT(customer_id) AS number_of_customers
+
 FROM customer
+
 GROUP BY location
+
 ORDER BY  number_of_customers DESC
+
 LIMIT 3;
 ***
 
 **Q2. Determine the distribution of customers by the number of orders placed.**
 
 ***
-WITH order_count AS (
-SELECT Customer_id,COUNT(order_id) AS NumberOfOrders
+WITH order_count AS 
+(SELECT Customer_id,COUNT(order_id) AS NumberOfOrders
+
 FROM Orders
+
 GROUP BY Customer_id
 )
+
 SELECT NumberOfOrders,COUNT(Customer_id) AS NoOfCustomers
+
 FROM order_count
+
 GROUP BY NumberOfOrders
+
 ORDER BY NumberOfOrders ASC;
 ***
 
 **Q3. Determine the distribution of customers within segments as one-time buyers, occasional shoppers, and regular customers for tailored marketing strategies. e.g. for NumberOfOrders         1='One-time buyer', NumberOfOrders 2-4='Occasional shoppers', NumberOfOrders >4='Regular Customer'.**
 
 ***
-WITH order_count AS (
-SELECT Customer_id,COUNT(order_id) AS NumberOfOrders,
+WITH order_count AS 
+
+(SELECT Customer_id,COUNT(order_id) AS NumberOfOrders,
+
 CASE
-    WHEN COUNT(order_id) >4 THEN 'Regular customers'
-    WHEN COUNT(order_id)=1 THEN 'One-time buyers'
-    ELSE 'Occasional Shoppers'
-    END AS Terms
+
+	WHEN COUNT(order_id) >4 THEN 'Regular customers'
+    
+	WHEN COUNT(order_id)=1 THEN 'One-time buyers'
+    
+	ELSE 'Occasional Shoppers'
+    
+	END AS Terms
+
 FROM Orders
+
 GROUP BY Customer_id
 )
+
 SELECT Terms,COUNT(Customer_id) AS NoOfCustomers
+
 FROM order_count
+
 GROUP BY Terms
+
 ORDER BY NoOfCustomers DESC;
 ***
 
@@ -143,9 +188,13 @@ ORDER BY NoOfCustomers DESC;
 
 ***
 SELECT product_id, ROUND(AVG(quantity),0) AS AVG_Purchase_Quantity, SUM(quantity*price_per_unit) AS total_revenue
+
 FROM orderdetail
+
 GROUP BY product_id
+
 HAVING AVG(quantity)=2
+
 ORDER BY total_revenue DESC;
 ***
 
@@ -153,12 +202,19 @@ ORDER BY total_revenue DESC;
 
 ***
 SELECT category, COUNT(DISTINCT customer_id) AS NoOfCustomers
+
 FROM product p
+
 JOIN orderdetail d
+
 ON p.product_id=d.product_id
+
 JOIN orders o
+
 ON d.order_id=o.order_id
+
 GROUP BY category
+
 ORDER BY NoOfCustomers DESC;
 ***
 
@@ -166,12 +222,19 @@ ORDER BY NoOfCustomers DESC;
 
 ***
 WITH MonthlySale AS
+
 (SELECT DATE_FORMAT (STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m') AS Month, SUM(total_amount) AS TotalSales
+
 FROM orders
+
 GROUP BY Month)
+
 SELECT  Month,TotalSales,
+
 ROUND(100*(TotalSales-LAG(TotalSales) OVER (ORDER BY Month ASC))/LAG(TotalSales) OVER (ORDER BY Month ASC),2) AS PercentChange
+
 FROM MonthlySale
+
 GROUP BY Month,TotalSales;
 ***
 
@@ -179,18 +242,26 @@ GROUP BY Month,TotalSales;
 
 ***
 SELECT DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m') AS Month,ROUND(AVG(total_amount),2) AS AvgOrderValue,
+
 ROUND(AVG(total_amount)- LAG(AVG(total_amount)) OVER (ORDER BY DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')),2) AS ChangeInValue
+
 FROM Orders
+
 GROUP BY Month
+
 ORDER BY ChangeInValue DESC;
 ***
 
 **Q8. Based on sales data, identify top 5 products with the fastest turnover rates, suggesting high demand and the need for frequent restocking.**
 ***
 SELECT Product_id,COUNT(order_id) AS SalesFrequency
+
 FROM OrderDetail
+
 GROUP BY Product_id
+
 ORDER BY SalesFrequency DESC
+
 LIMIT 5;
 ***
 
@@ -198,25 +269,39 @@ LIMIT 5;
 
 ***
 SELECT p.Product_id,p.Name,COUNT(Distinct o.customer_id) AS UniqueCustomerCount
+
 FROM Product p
+
 JOIN OrderDetail d
+
 ON p.Product_id=d.Product_id
+
 JOIN Orders o
+
 ON d.Order_id=o.Order_id
+
 Group by p.Product_id,p.Name
+
 Having COUNT(DISTINCT o.customer_id) <(SELECT COUNT(*) FROM customer)*0.4;
 ***
 
 **Q10. Evaluate the month-on-month growth rate in the customer base to understand the effectiveness of marketing campaigns and market expansion efforts.**
 
 ***
-WITH firstPurchase AS (
-SELECT Customer_id, MIN(DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')) AS firstmonth
+WITH firstPurchase AS 
+
+(SELECT Customer_id, MIN(DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')) AS firstmonth
+
 FROM Orders
+
 GROUP BY Customer_id)
+
 SELECT firstmonth AS FirstPurchaseMonth, COUNT(Customer_id) AS TotalNewCustomers
+
 FROM firstPurchase
+
 GROUP BY firstmonth
+
 ORDER BY firstmonth ASC;
 ***
 
@@ -224,9 +309,13 @@ ORDER BY firstmonth ASC;
 
 ***
 SELECT DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m') AS Month, SUM(total_amount) AS TotalSales
+
 FROM Orders
+
 GROUP BY DATE_FORMAT(STR_TO_DATE(order_date,'%Y-%m-%d'),'%Y-%m')
+
 ORDER BY TotalSales DESC
+
 LIMIT 3;
 ***
 
